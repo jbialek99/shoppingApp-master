@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koszyk</title>
+    <link rel="stylesheet" href="/css/cart.css">
+</head>
+<body>
+<div class="container">
+    <h2 class="cart-title">Twój koszyk</h2>
+
+    <div th:if="${message}" class="message">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div th:if="${order != null and order.orderItems != null and order.orderItems.size() > 0}" class="cart-content">
+        <div th:each="item : ${order.orderItems}" class="product-item">
+            <div class="product-details">
+                <p class="product-name" th:text="${item.product.name}">Model</p>
+                <p class="product-price" th:text="'Cena za sztukę: ' + ${item.product.price} + ' $'">Cena za sztukę</p>
+                <p class="product-quantity" th:text="'Ilość: ' + ${item.quantity}">Ilość</p>
+                <p class="item-total-price" th:text="'Łączna cena: ' + ${item.totalItemPrice} + ' $'">Łączna cena</p>
+            </div>
+
+            <div class="product-actions">
+                <form th:action="@{/cart/decreaseQuantity/{productId}(productId=${item.product.id})}" method="post"
+                      class="action-form-inline">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    <button type="submit" class="decrease-btn"> -</button>
+                </form>
+
+                <form th:action="@{/cart/increaseQuantity/{productId}(productId=${item.product.id})}" method="post"
+                      class="action-form-inline">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    <button type="submit" class="increase-btn"> +</button>
+                </form>
+
+                <form th:action="@{/cart/removeItem/{productId}(productId=${item.product.id})}" method="post"
+                      class="action-form-inline">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                    <button type="submit" class="remove-btn">Usuń produkt</button>
+                </form>
+            </div>
+            <hr>
+        </div>
+
+        <p class="total-price" th:text="'Łączna cena całkowita: ' + ${order.totalPrice} + ' $'">Łączna cena
+            całkowita</p>
+
+        <div class="cart-actions">
+            <form th:action="@{/cart/placeOrder}" method="post" class="action-form">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                <button type="submit" class="confirm-btn">Złóż zamówienie</button>
+            </form>
+
+            <form th:action="@{/cart/cancel}" method="post" class="action-form">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                <button type="submit" class="cancel-btn">Anuluj zamówienie</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${order == null or order.orderItems == null or order.orderItems.size() == 0}" class="empty-cart">
+        <p>Twój koszyk jest pusty.</p>
+    </div>
+
+    <div class="back-home">
+        <a href="/home" class="back-home-btn">Kontynuuj zakupy</a>
+    </div>
+</div>
+</body>
+</html>

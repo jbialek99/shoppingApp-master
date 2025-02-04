@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page - shoppingApp</title>
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+
+<div class="header-bar">
+    <!-- Koszyk -->
+    <a href="/cart" class="cart-icon">
+        <img src="/images/cart-icon.jpg" alt="Koszyk">
+        <!-- Wyświetl itemCount tylko jeśli większe od zera -->
+        <div th:if="${session.itemCount > 0}" class="cart-badge" th:text="${session.itemCount}"></div>
+    </a>
+    <a href="/contact">Kontakt</a>
+
+    <!-- Linki dla niezalogowanych użytkowników -->
+    <a href="/login" sec:authorize="isAnonymous()">Zaloguj się</a>
+    <a href="/register" sec:authorize="isAnonymous()">Utwórz konto</a>
+
+    <!-- Link "Moje dane" i wylogowanie tylko dla zalogowanych użytkowników -->
+    <a href="/my-data" sec:authorize="isAuthenticated()">Moje dane</a>
+    <form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" style="display: inline;">
+        <button type="submit">Wyloguj się</button>
+    </form>
+</div>
+
+<div class="container">
+    <!-- Wiadomość o dodaniu produktu do koszyka -->
+    <div th:if="${message}" class="alert-message alert-message-slide">
+        <p th:text="${message}">Produkt został dodany do koszyka</p>
+    </div>
+
+    <!-- Sekcja z produktami -->
+    <section class="product-section">
+        <div class="product-list">
+            <th:block th:each="product : ${products}">
+                <div class="product-item" th:classappend="${product.stock == 0} ? 'out-of-stock' : ''">
+                    <img th:src="@{${product.imageUrl}}" alt="Zdjęcie produktu" class="product-image">
+                    <h3 th:field="*{product.name}">Produkt</h3>
+                    <p th:text="${product.description}">Opis produktu</p>
+                    <p th:text="'$' + ${product.price}">Cena</p>
+
+                    <div th:if="${product.stock > 0}">
+                        <form th:action="@{/cart/add/{productId}(productId=${product.id})}" method="post">
+                            <button type="submit">Kup teraz</button>
+                        </form>
+                    </div>
+
+                    <div th:if="${product.stock == 0}">
+                        <p class="unavailable-text">Produkt tymczasowo niedostępny</p>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </section>
+
+    <!-- Stopka -->
+    <footer>
+        <p>&copy; 2024 shoppingApp Wszystkie prawa zastrzeżone ;D</p>
+    </footer>
+</div>
+
+</body>
+</html>
