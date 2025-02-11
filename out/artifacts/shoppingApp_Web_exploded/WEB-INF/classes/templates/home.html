@@ -40,7 +40,7 @@
             <th:block th:each="product : ${products}">
                 <div class="product-item" th:classappend="${product.stock == 0} ? 'out-of-stock' : ''">
                     <img th:src="@{${product.imageUrl}}" alt="Zdjęcie produktu" class="product-image">
-                    <h3 th:field="*{product.name}">Produkt</h3>
+                    <h3 th:text="${product.name}">Produkt</h3>
                     <p th:text="${product.description}">Opis produktu</p>
                     <p th:text="'$' + ${product.price}">Cena</p>
 
