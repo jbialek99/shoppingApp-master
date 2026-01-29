@@ -8,6 +8,8 @@ services:
       - "3308:3306"
     environment:
       MYSQL_DATABASE: shopdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - db-data:/var/lib/mysql
@@ -24,6 +26,8 @@ services:
     environment:
       SERVER_PORT: 9090
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/shopdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: user
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
@@ -38,3 +42,4 @@ networks:
     driver: bridge
 
 volumes:
+  db-data: {}
