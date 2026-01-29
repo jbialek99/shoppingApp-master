@@ -1,5 +1,3 @@
-FROM openjdk:20
-
 WORKDIR /app
 
 COPY shopapp.jar app.jar
